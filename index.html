@@ -3,56 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Scanner</title>
-  <script src="https://unpkg.com/html5-qrcode"></script>
+  <title>Scan to Open Website</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 30px 15px;
-      background: #f4f4f9;
+      background: #f5f3ff;
+      padding: 40px 20px;
     }
 
-    h1 { color: #333; }
-
-    #reader {
-      width: 100%;
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
       max-width: 400px;
-      margin: 20px auto;
+      margin: 30px auto;
+      box-shadow: 0 4px 15px #0001;
+    }
+
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      margin: 25px auto;
+    }
+
+    a {
+      color: #6d28d9;
     }
   </style>
 </head>
 <body>
-  <h1>Scan QR Code</h1>
-  <p>Allow camera access and scan your QR code.</p>
+  <div class="container">
+    <h1>Welcome!</h1>
+    <p>Scan this QR code to open the main website.</p>
 
-  <div id="reader"></div>
-  <p id="message"></p>
+    <div id="qrcode"></div>
 
+    <p>
+      <a href="./main.html">Or click here to open the website</a>
+    </p>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
-    function onScanSuccess(decodedText) {
-      const message = document.getElementById("message");
+    const mainPageURL = new URL("main.html", window.location.href).href;
 
-      // Accept only QR codes containing the expected destination.
-      const target = new URL(decodedText, window.location.href);
-
-      if (
-        target.origin === window.location.origin &&
-        target.pathname.endsWith("/main.html")
-      ) {
-        window.location.href = target.href;
-      } else {
-        message.textContent =
-          "Invalid QR code. Please scan the correct code.";
-      }
-    }
-
-    const scanner = new Html5QrcodeScanner("reader", {
-      fps: 10,
-      qrbox: { width: 250, height: 250 }
+    new QRCode(document.getElementById("qrcode"), {
+      text: mainPageURL,
+      width: 220,
+      height: 220,
+      correctLevel: QRCode.CorrectLevel.H
     });
-
-    scanner.render(onScanSuccess);
   </script>
 </body>
 </html>
