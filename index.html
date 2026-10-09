@@ -1,24 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<style>
-body {
-            background-color: pink;
-            margin: 0;
-            padding: 10px;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px 15px;
+      background: #f4f4f9;
+    }
 
-img {
-  width: 100%;
-} 
-</style>
+    h1 { color: #333; }
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+  </style>
 </head>
 <body>
+  <h1>Scan QR Code</h1>
+  <p>Allow camera access and scan your QR code.</p>
 
+  <div id="reader"></div>
+  <p id="message"></p>
 
-<img src="https://my-cafe06.vercel.app/" alt="SCAN ME FOR MENU" style="width:128px;height:128px;">
+  <script>
+    function onScanSuccess(decodedText) {
+      const message = document.getElementById("message");
 
+      // Accept only QR codes containing the expected destination.
+      const target = new URL(decodedText, window.location.href);
+
+      if (
+        target.origin === window.location.origin &&
+        target.pathname.endsWith("/main.html")
+      ) {
+        window.location.href = target.href;
+      } else {
+        message.textContent =
+          "Invalid QR code. Please scan the correct code.";
+      }
+    }
+
+    const scanner = new Html5QrcodeScanner("reader", {
+      fps: 10,
+      qrbox: { width: 250, height: 250 }
+    });
+
+    scanner.render(onScanSuccess);
+  </script>
 </body>
 </html>
